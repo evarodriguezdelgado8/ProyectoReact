@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   // FUNCIÓN DE REGISTRO REAL
   const register = async (name, email, password) => {
     try {
-      await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+      await axios.post('/api/auth/register', { name, email, password });
       toast.success("Cuenta creada. ¡Ya puedes iniciar sesión!");
       // Opcional: podrías loguearlo automáticamente aquí
     } catch (err) {
