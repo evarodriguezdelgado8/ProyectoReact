@@ -80,7 +80,7 @@ La aplicación mantiene una separación estricta entre cliente y servidor:
     * Navegar a `/frontend` y ejecutar `npm install`.
     * Ejecutar `npm start`.
 
-##👥 Usuarios de Prueba
+## 👥 Usuarios de Prueba
 
 Para facilitar la corrección, se pueden utilizar las siguientes credenciales (asegúrate de haber ejecutado el script SQL primero):
 
