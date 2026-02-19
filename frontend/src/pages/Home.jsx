@@ -21,8 +21,8 @@ const Home = () => {
 
   const fetchData = async () => {
     try {
-      const resMovies = await axios.get(`http://localhost:5000/api/reviews/${user.id}`);
-      const resFavs = await axios.get(`http://localhost:5000/api/favorites/${user.id}`);
+      const resMovies = await axios.get(`/api/reviews/${user.id}`);
+      const resFavs = await axios.get(`/api/favorites/${user.id}`);
       setMovies(resMovies.data);
       setFavorites(resFavs.data);
     } catch (error) { console.error("Error cargando datos", error); }
@@ -52,7 +52,7 @@ const Home = () => {
       rating: newMovie.rating
     };
     try {
-      await axios.post('http://localhost:5000/api/reviews/add', movieData);
+      await axios.post('/api/reviews/add', movieData);
       toast.success("¡Película añadida!");
       setNewMovie({ title: '', img: '', comment: '', rating: 5 });
       fetchData();
@@ -61,7 +61,7 @@ const Home = () => {
 
   const deleteMovie = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/reviews/${id}`);
+      await axios.delete(`/api/reviews/${id}`);
       toast.success("Reseña eliminada");
       fetchData();
     } catch (err) { toast.error("Error al eliminar"); }
@@ -71,10 +71,10 @@ const Home = () => {
     try {
       const isFav = favorites.find(f => f.movie_id === movie.movie_id);
       if (isFav) {
-        await axios.delete(`http://localhost:5000/api/favorites/${user.id}/${movie.movie_id}`);
+        await axios.delete(`/api/favorites/${user.id}/${movie.movie_id}`);
         toast.success("Quitada de favoritas");
       } else {
-        await axios.post('http://localhost:5000/api/favorites/add', {
+        await axios.post('/api/favorites/add', {
           user_id: user.id,
           movie_id: movie.movie_id,
           title: movie.title,
@@ -99,7 +99,7 @@ const startEditing = (movie) => {
 
   const saveEdit = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/api/reviews/${id}`, editData);
+      await axios.put(`/api/reviews/${id}`, editData);
       setEditingId(null);
       toast.success("¡Cine actualizado!");
       fetchData();

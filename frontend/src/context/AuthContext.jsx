@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   // FUNCIÓN DE LOGIN REAL
   const login = async (email, password) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post('/api/auth/login', { email, password });
       setUser(res.data.user);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       toast.success(`¡Bienvenido de nuevo, ${res.data.user.name}!`);
