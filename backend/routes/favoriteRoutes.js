@@ -6,6 +6,6 @@ const favoriteController = require('../controllers/favoriteController'); // Impo
 // El camarero solo recibe el pedido y se lo pasa al cocinero
 router.get('/:userId', favoriteController.getUserFavorites);
 router.post('/add', favoriteController.addFavorite);
-router.post('/remove', favoriteController.removeFavorite);
+router.delete('/:userId/:movieId', favoriteController.removeFavorite);
 
 module.exports = router;

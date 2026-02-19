@@ -1,58 +1,63 @@
-// frontend/src/components/MovieCard.jsx
-import { useState } from 'react';
-import { FaHeart, FaRegHeart, FaCommentDots } from 'react-icons/fa';
+import { FaStar, FaHeart, FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
 
-function MovieCard({ movie, isFav, onToggleFav, onAddReview }) {
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [comment, setComment] = useState('');
-  const [rating, setRating] = useState(5);
+function MovieCard({ movie, isFav, onToggleFav, onEdit, onDelete, isEditing, editData, setEditData, onSaveEdit, onCancelEdit }) {
+  
+  const handleImgError = (e) => {
+    e.target.onerror = null; 
+    e.target.src = 'https://via.placeholder.com/300x450?text=Sin+Poster';
+  };
 
   return (
-    <div style={{ background: '#1f1f1f', padding: '15px', borderRadius: '10px', textAlign: 'center' }}>
-      <img src={movie.img} alt={movie.title} style={{ width: '100%', borderRadius: '8px' }} />
-      <h4 style={{ margin: '10px 0' }}>{movie.title}</h4>
-      
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '10px' }}>
-        {/* BOTÓN FAVORITO */}
-        <button 
-          onClick={() => onToggleFav(movie)}
-          style={{ background: 'none', border: 'none', color: isFav ? '#e50914' : 'white', cursor: 'pointer', fontSize: '1.4rem' }}
-        >
-          {isFav ? <FaHeart /> : <FaRegHeart />}
-        </button>
-
-        {/* BOTÓN ABRIR REVIEW */}
-        <button 
-          onClick={() => setShowReviewForm(!showReviewForm)}
-          style={{ background: 'none', border: 'none', color: '#00c030', cursor: 'pointer', fontSize: '1.4rem' }}
-        >
-          <FaCommentDots />
-        </button>
+    <div className={`diary-card ${isEditing ? 'editing-active' : ''}`}>
+      {/* Mantenemos la estructura para que la foto y el contenido no se solapen */}
+      <div className="card-img-container">
+        <img 
+          src={isEditing ? (editData.img || 'https://via.placeholder.com/300x450?text=Sin+Poster') : (movie.img || 'https://via.placeholder.com/300x450?text=Sin+Poster')} 
+          alt={movie.title} 
+          className="card-img" 
+          onError={handleImgError}
+        />
       </div>
 
-      {showReviewForm && (
-        <div style={{ background: '#333', padding: '10px', borderRadius: '5px' }}>
-          <select value={rating} onChange={(e) => setRating(e.target.value)} style={{ width: '100%', marginBottom: '5px' }}>
-            {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} Estrellas</option>)}
-          </select>
-          <textarea 
-            placeholder="Tu opinión..." 
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            style={{ width: '100%', borderRadius: '4px', border: 'none', padding: '5px' }}
-          />
-          <button 
-            onClick={() => {
-              onAddReview(movie, comment, rating);
-              setShowReviewForm(false);
-              setComment('');
-            }}
-            style={{ background: '#00c030', color: 'white', border: 'none', width: '100%', marginTop: '5px', padding: '5px', cursor: 'pointer' }}
-          >
-            Publicar Review
-          </button>
-        </div>
-      )}
+      <div className="card-content">
+        {isEditing ? (
+          /* MODO EDICIÓN */
+          <div className="edit-mode-container" style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+            <input type="text" value={editData.title} onChange={(e) => setEditData({...editData, title: e.target.value})} />
+            <input type="text" value={editData.img} onChange={(e) => setEditData({...editData, img: e.target.value})} />
+            <textarea value={editData.comment} onChange={(e) => setEditData({...editData, comment: e.target.value})} />
+            <select value={editData.rating} onChange={(e) => setEditData({...editData, rating: parseInt(e.target.value)})}>
+              {[5,4,3,2,1].map(n => <option key={n} value={n}>{n} Estrellas</option>)}
+            </select>
+            <div className="edit-actions">
+              <button className="btn-save-edit" onClick={() => onSaveEdit(movie.id)}>
+                <FaSave /> Guardar
+              </button>
+              <button className="btn-cancel-edit" onClick={onCancelEdit}>
+                <FaTimes /> Cancelar
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* MODO VISTA */
+          <>
+            <div className="card-header">
+              <h4>{movie.title}</h4>
+              <div className="stars">
+                {[...Array(Number(movie.rating))].map((_, i) => <FaStar key={i} />)}
+              </div>
+            </div>
+            <p className="comment">"{movie.comment}"</p>
+            <div className="card-actions">
+              <button onClick={() => onToggleFav(movie)}>
+                <FaHeart style={{color: isFav ? 'red' : 'white'}} />
+              </button>
+              <button onClick={() => onEdit(movie)}><FaEdit /></button>
+              <button className="btn-delete" onClick={() => onDelete(movie.id)}><FaTrash /></button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

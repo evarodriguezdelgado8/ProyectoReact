@@ -1,55 +1,58 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom'; // Añadimos useNavigate
+import { FaFilm } from 'react-icons/fa';
 
-function Login() {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Inicializamos el navegador
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // Asegúrate de que la URL coincide con tu puerto de Backend
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-      
-      login(res.data.user); 
-      toast.success('¡Bienvenido!');
-      navigate('/');
-    } catch (error) {
-      console.error("Error detallado:", error.response?.data);
-      toast.error(error.response?.data?.message || 'Error al iniciar sesión');
-    }
+    await login(email, password);
+    // Después de que el context haga su magia, saltamos al home
+    navigate('/'); 
   };
 
   return (
     <div className="auth-wrapper">
       <div className="auth-container">
-        <h2>LetterMyBox</h2>
+        <FaFilm style={{ fontSize: '3rem', color: 'var(--accent)', marginBottom: '1rem' }} />
+        <h2>Bienvenido</h2>
+        <p className="auth-subtitle">Entra para gestionar tu diario de cine</p>
+        
         <form className="auth-form" onSubmit={handleSubmit}>
-          <input 
-            type="email" 
-            placeholder="Correo electrónico" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} 
-            required
-          />
-          <input 
-            type="password" 
-            placeholder="Contraseña" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} 
-            required
-          />
-          <button type="submit" className="btn-auth">ENTRAR</button>
+          <div className="input-group">
+            <label>EMAIL</label>
+            <input 
+              type="email" 
+              placeholder="tu@email.com" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+            />
+          </div>
+          <div className="input-group">
+            <label>CONTRASEÑA</label>
+            <input 
+              type="password" 
+              placeholder="••••••••" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+            />
+          </div>
+          <button type="submit" className="btn-auth">INICIAR SESIÓN</button>
         </form>
-        <p>¿No tienes cuenta? <Link to="/register">Regístrate</Link></p>
+
+        <p className="auth-footer">
+          ¿No tienes cuenta? <Link to="/register">Regístrate gratis</Link>
+        </p>
       </div>
     </div>
   );
-}
+};
 
 export default Login;
